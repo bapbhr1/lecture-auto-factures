@@ -8,15 +8,19 @@ Ce projet met en concurrence trois familles de méthodes — traitement d'image 
 
 ## Résultats en un coup d'œil
 
-| Approche | Technologies | MAE | RMSE | R² |
-|---|---|:---:|:---:|:---:|
-| Traitement d'image classique | OpenCV + PyTesseract (OCR) | 55,97 € | 247,53 € | -1,62 |
-| Modèle pré-entraîné | LayoutLMv3 (Hugging Face) | 7,87 € | 22,00 € | 0,78 |
-| **Modèle de langage multimodal** | **Gemma 3 (4B) via Ollama** | **0,26 €** | **1,20 €** | **1,00** |
+Évaluation sur l'ensemble des ~50 factures (précision = part des montants exactement retrouvés) :
+
+| Approche | Technologies | Précision | MAE | RMSE | R² |
+|---|---|:---:|:---:|:---:|:---:|
+| Traitement d'image classique | OpenCV + PyTesseract (OCR) | très faible | – | – | – |
+| Modèle pré-entraîné | LayoutLMv3 (Hugging Face) | 62 % | 55,97 € | 247,53 € | -1,62 |
+| **Modèle de langage multimodal** | **Gemma 3 (4B) via Ollama** | **92 %** | **0,26 €** | **1,20 €** | **1,00** |
 
 > *MAE : erreur absolue moyenne · RMSE : erreur quadratique moyenne · R² : coefficient de détermination. Plus la MAE et la RMSE sont faibles, mieux c'est ; un R² proche de 1 indique une excellente corrélation.*
+>
+> *Les métriques d'erreur de LayoutLMv3 sont très dégradées par quelques factures aberrantes (montants > 250 €). En les écartant, le modèle atteint MAE 7,87 € / RMSE 22,00 € / R² 0,78.*
 
-**Conclusion :** l'OCR classique reste fragile face à la diversité des tickets ; un modèle pré-entraîné améliore nettement les résultats ; le modèle de langage multimodal `gemma3:4b` obtient les meilleures performances, avec une erreur moyenne inférieure à 30 centimes.
+**Conclusion :** l'OCR classique reste trop fragile face à la diversité des tickets ; le modèle pré-entraîné LayoutLMv3 retrouve le bon montant dans ~60 % des cas mais reste sensible aux valeurs extrêmes ; le modèle de langage multimodal `gemma3:4b` obtient de loin les meilleures performances, avec une erreur moyenne inférieure à 30 centimes et 92 % de montants exacts.
 
 ---
 
