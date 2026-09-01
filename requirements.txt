@@ -1,10 +1,23 @@
+# Traitement d'image et OCR
 numpy
-pandas
-scikit-image
 opencv-python
+scikit-image
 pillow
 pytesseract
+
+# Analyse de données et visualisation
+pandas
 matplotlib
 seaborn
-pandas
+scikit-learn
+
+# Modèle pré-entraîné Hugging Face
 transformers
+torch
+torchvision
+
+# Modèle de langage multimodal (Ollama)
+ollama
+
+# Utilitaires
+tqdm

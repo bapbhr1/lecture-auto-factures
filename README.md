@@ -1,26 +1,37 @@
-# Lecture automatique de factures
+# Extraction automatique du montant total d'une facture
 
-> **Projet de cours — (4ᵉ année d'école d'ingénieurs) - 2024/2025**
->
-> **Étudiants :** Baptiste Behr · Thomas Kusnierek · Benjamin Szurek
+**Étude comparative de trois approches de vision par ordinateur et d'IA pour lire le montant total d'un ticket de caisse à partir de sa photo.**
 
-Ce projet a pour objectif de **détecter automatiquement le montant total d'une facture** à partir de son image. Trois approches y sont mises en œuvre et comparées (Voir fichier .ipynb pour + de détails sur les codes, méthodes d'évaluations et résultats).
-
----
-
-## 1. Modèle OpenCV + PyTesseract
-
-Cette première approche repose sur du traitement d'image classique. À partir de l'image de départ :
+Ce projet met en concurrence trois familles de méthodes — traitement d'image classique, modèle de deep learning pré-entraîné, et modèle de langage multimodal — évaluées sur un même jeu de ~50 factures réelles avec les métriques MAE, RMSE et R².
 
 ![Image de départ](./assets/sample.jpg)
 
-les librairies OpenCV et PyTesseract sont utilisées pour détecter les contours, isoler le plus grand contour, recadrer et zoomer sur l'image, puis extraire le montant de la facture :
+## Résultats en un coup d'œil
+
+| Approche | Technologies | MAE | RMSE | R² |
+|---|---|:---:|:---:|:---:|
+| Traitement d'image classique | OpenCV + PyTesseract (OCR) | 55,97 € | 247,53 € | -1,62 |
+| Modèle pré-entraîné | LayoutLMv3 (Hugging Face) | 7,87 € | 22,00 € | 0,78 |
+| **Modèle de langage multimodal** | **Gemma 3 (4B) via Ollama** | **0,26 €** | **1,20 €** | **1,00** |
+
+> *MAE : erreur absolue moyenne · RMSE : erreur quadratique moyenne · R² : coefficient de détermination. Plus la MAE et la RMSE sont faibles, mieux c'est ; un R² proche de 1 indique une excellente corrélation.*
+
+**Conclusion :** l'OCR classique reste fragile face à la diversité des tickets ; un modèle pré-entraîné améliore nettement les résultats ; le modèle de langage multimodal `gemma3:4b` obtient les meilleures performances, avec une erreur moyenne inférieure à 30 centimes.
+
+---
+
+## Détail des approches
+
+### 1. Traitement d'image classique — OpenCV + PyTesseract
+
+
+Cette première approche repose sur du traitement d'image classique. À partir de l'image de départ, les librairies OpenCV et PyTesseract sont utilisées pour détecter les contours, isoler le plus grand contour, recadrer et redresser l'image, puis extraire le montant de la facture par OCR :
 
 | ![Contours](./assets/pleincontours.png) | ![Filtrage](./assets/AVECFILTRE.png) | ![Prix détecté](./assets/CASEDEVECFILTRE.png) |
 | :-------------------------------------: | :----------------------------------: | :---------------------------------------------: |
 |         Détection des contours         |               Filtrage               |                 Prix détecté                 |
 
-## 2. Modèle Hugging Face
+### 2. Modèle pré-entraîné — LayoutLMv3 (Hugging Face)
 
 Ce modèle a été **pré-entraîné à la détection de factures** ; il provient de la plateforme Hugging Face :
 
@@ -31,7 +42,7 @@ Il permet d'obtenir ce type de résultat :
 
 ![Résultat Hugging Face](./assets/output.png)
 
-## 3. Modèle LLM (Gemma via Ollama)
+### 3. Modèle de langage multimodal — Gemma 3 via Ollama
 
 Cette dernière approche utilise le modèle `gemma3:4b` servi par **Ollama**, interrogé pour détecter le montant de la facture.
 
@@ -39,8 +50,35 @@ Cette dernière approche utilise le modèle `gemma3:4b` servi par **Ollama**, in
 
 ---
 
+## Structure du dépôt
+
+```
+.
+├── Projet_Capture_Facture.ipynb   # Notebook principal : les 3 approches, l'évaluation et les résultats
+├── imgutils.py                    # Fonctions utilitaires de traitement d'image (OpenCV)
+├── requirements.txt               # Dépendances Python
+├── assets/                        # Images d'illustration du README
+└── data/                          # Jeu de données de factures utilisé pour l'évaluation
+```
+
 ## Installation
 
 ```bash
 pip install -r requirements.txt
 ```
+
+Prérequis supplémentaires selon les approches :
+- **PyTesseract** nécessite le moteur [Tesseract-OCR](https://github.com/tesseract-ocr/tesseract) installé sur la machine.
+- **Ollama** doit être installé, avec le modèle `gemma3:4b` téléchargé (`ollama pull gemma3:4b`). Un GPU est recommandé.
+
+## Utilisation
+
+Ouvrir et exécuter le notebook [`Projet_Capture_Facture.ipynb`](./Projet_Capture_Facture.ipynb), qui contient l'ensemble du code, la méthodologie d'évaluation et les résultats détaillés des trois approches.
+
+---
+
+## Auteurs
+
+Baptiste Behr · Thomas Kusnierek · Benjamin Szurek
+
+*Projet réalisé dans un cadre académique (école d'ingénieurs, 2024-2025).*
