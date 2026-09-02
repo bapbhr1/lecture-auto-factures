@@ -1,4 +1,4 @@
-# Lecture de montant sur facture - Computer Vision
+# Projet académique (4e année) Lecture de montant sur facture - Computer Vision
 
 Trois méthodes mises en concurrence sur un même jeu de **~50 tickets de caisse réels** : traitement d'image classique, modèle de deep learning pré-entraîné, et modèle de langage multimodal. Qui lit le mieux le montant total ?
 
